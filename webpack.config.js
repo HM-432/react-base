@@ -17,6 +17,9 @@ var config = {
 //Webpack common config for different environments
 var webpackCommonConfig = {
   entry: config.appPath,
+  resolve: {
+    extensions: ['', '.js', '.jsx']
+  },
   output: {
     path: config.buildPath,
     filename: 'bundle.js'
@@ -31,6 +34,11 @@ var webpackCommonConfig = {
       {
         test: /\.less$/,
         loader: 'style!css!less',
+        include: config.appPath
+      },
+      {
+        test: /\.jsx?$/,
+        loaders: ['babel'],
         include: config.appPath
       }
     ]
