@@ -41,8 +41,19 @@ var webpackCommonConfig = {
       },
       {
         test: /\.jsx?$/,
-        loaders: ['babel'],
-        include: config.appPath
+        loader: 'babel',
+        include: config.appPath,
+        exclude: /node_modules/,
+        query: {
+          presets: ['es2015', 'react', 'stage-0'],
+          env:{
+            build: {
+              optional: ["optimisation", "minification"]
+            },
+            start: {
+            }
+          }
+        }
       }
     ]
   }
