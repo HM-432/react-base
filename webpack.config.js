@@ -7,6 +7,9 @@ var OpenBrowserWebPackPlugin = require('open-browser-webpack-plugin');
 var ROOT_PATH = path.resolve(__dirname);
 var TARGET = process.env.npm_lifecycle_event;
 
+//Setting babel environment
+process.env.BABEL_ENV = TARGET;
+
 //Basic parameter config
 var config = {
   appPath: path.resolve(ROOT_PATH, 'app'),
