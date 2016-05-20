@@ -3,6 +3,8 @@ var webpack = require('webpack');
 var merge = require('webpack-merge');
 var HtmlwebpackPlugin = require('html-webpack-plugin');
 var OpenBrowserWebPackPlugin = require('open-browser-webpack-plugin');
+var Clean = require('clean-webpack-plugin');
+
 var pkg = require('./package.json')
 
 var ROOT_PATH = path.resolve(__dirname);
@@ -88,6 +90,7 @@ var webpackConfig = {
       "filename": '[name].[chunkhash].js?'
     },
     "plugins": [
+      new Clean(['build']),
       new webpack.optimize.CommonsChunkPlugin(
         "vendor",
         '[name].[chunkhash].js'
