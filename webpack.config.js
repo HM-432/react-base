@@ -130,6 +130,6 @@ var webpackConfig = {
 
 if (TARGET === 'start' || !TARGET) {
   module.exports = webpackConfig.development;
-} else {
+} else if (TARGET === 'build' || TARGET === 'stats') {
   module.exports = webpackConfig.production;
 }

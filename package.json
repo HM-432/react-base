@@ -8,6 +8,7 @@
     "build": "webpack",
     "lint": "eslint . --ext .js --ext .jsx",
     "clean": "rm -rf ./build",
+    "stats": "webpack --profile --json > stats.json && echo 'see stats.json at http://webpack.github.io/analyse/'",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "hm-432",
