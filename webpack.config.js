@@ -1,12 +1,16 @@
+//base
 var path = require('path');
 var webpack = require('webpack');
+
+//plugins
 var merge = require('webpack-merge');
 var HtmlwebpackPlugin = require('html-webpack-plugin');
 var OpenBrowserWebPackPlugin = require('open-browser-webpack-plugin');
 var Clean = require('clean-webpack-plugin');
+var ExtractTextPlugin = require('extract-text-webpack-plugin');
 
+//variables
 var pkg = require('./package.json')
-
 var ROOT_PATH = path.resolve(__dirname);
 var TARGET = process.env.npm_lifecycle_event;
 var APP_PATH = path.resolve(ROOT_PATH, 'app');
@@ -40,11 +44,6 @@ var webpackCommonConfig = {
     }],
     loaders: [
       {
-        test: /\.less$/,
-        loader: 'style!css!less',
-        include: config.appPath
-      },
-      {
         test: /\.jsx?$/,
         loader: 'babel',
         include: config.appPath,
@@ -73,6 +72,15 @@ var webpackConfig = {
       progress: true,
       port: config.port
     },
+    module: {
+      loaders: [
+        {
+          test: /\.less$/,
+          loader: 'style!css!less',
+          include: config.appPath
+        }
+      ]
+    },
     plugins: [
       new HtmlwebpackPlugin({ title: 'Kanban app' }),
       new webpack.HotModuleReplacementPlugin(),
@@ -82,15 +90,25 @@ var webpackConfig = {
   production: merge(webpackCommonConfig, {
     devtool: "source-map",
     "entry": {
-      "app": APP_PATH,
+      "app": config.appPath,
       "vendor": Object.keys(pkg.dependencies)
     },
     "output": {
-      "path": BUILD_PATH,
+      "path": config.buildPath,
       "filename": '[name].[chunkhash].js?'
+    },
+    module: {
+      loaders: [
+        {
+          "test": /\.less$/,
+          "loader": ExtractTextPlugin.extract(['css','less']),
+           include: config.appPath
+        }
+      ]
     },
     "plugins": [
       new Clean(['build']),
+      new ExtractTextPlugin('style.[chunkhash].css'),
       new webpack.optimize.CommonsChunkPlugin(
         "vendor",
         '[name].[chunkhash].js'
@@ -104,7 +122,8 @@ var webpackConfig = {
         compress: {
           warnings: false
         }
-      })
+      }),
+      new HtmlwebpackPlugin({ title: 'Kanban app' })
     ]
   })
 };
