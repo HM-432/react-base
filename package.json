@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "webpack-dev-server --progress --hot --profile --colors",
+    "build": "webpack",
     "lint": "eslint . --ext .js --ext .jsx",
     "clean": "rm -rf ./build",
     "test": "echo \"Error: no test specified\" && exit 1"

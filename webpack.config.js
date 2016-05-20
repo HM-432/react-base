@@ -3,17 +3,20 @@ var webpack = require('webpack');
 var merge = require('webpack-merge');
 var HtmlwebpackPlugin = require('html-webpack-plugin');
 var OpenBrowserWebPackPlugin = require('open-browser-webpack-plugin');
+var pkg = require('./package.json')
 
 var ROOT_PATH = path.resolve(__dirname);
 var TARGET = process.env.npm_lifecycle_event;
+var APP_PATH = path.resolve(ROOT_PATH, 'app');
+var BUILD_PATH = path.resolve(ROOT_PATH, 'build');
 
 //Setting babel environment
 process.env.BABEL_ENV = TARGET;
 
 //Basic parameter config
 var config = {
-  appPath: path.resolve(ROOT_PATH, 'app'),
-  buildPath: path.resolve(ROOT_PATH, 'build'),
+  appPath: APP_PATH,
+  buildPath: BUILD_PATH,
   port: 9191
 };
 
@@ -48,7 +51,6 @@ var webpackCommonConfig = {
           presets: ['es2015', 'react', 'stage-0'],
           env:{
             build: {
-              optional: ["optimisation", "minification"]
             },
             start: {
             }
@@ -76,12 +78,36 @@ var webpackConfig = {
     ]
   }),
   production: merge(webpackCommonConfig, {
-
+    devtool: "source-map",
+    "entry": {
+      "app": APP_PATH,
+      "vendor": Object.keys(pkg.dependencies)
+    },
+    "output": {
+      "path": BUILD_PATH,
+      "filename": '[name].[chunkhash].js?'
+    },
+    "plugins": [
+      new webpack.optimize.CommonsChunkPlugin(
+        "vendor",
+        '[name].[chunkhash].js'
+      ),
+      new webpack.DefinePlugin({
+        "process.env": {
+          "NODE_ENV": JSON.stringify('production')
+        }
+      }),
+      new webpack.optimize.UglifyJsPlugin({
+        compress: {
+          warnings: false
+        }
+      })
+    ]
   })
 };
 
 if (TARGET === 'start' || !TARGET) {
   module.exports = webpackConfig.development;
 } else {
-  process.exit(1);
+  module.exports = webpackConfig.production;
 }
