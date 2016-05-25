@@ -9,7 +9,8 @@
     "lint": "eslint . --ext .js --ext .jsx",
     "clean": "rm -rf ./build",
     "stats": "webpack --profile --json > stats.json && echo 'see stats.json at http://webpack.github.io/analyse/'",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "karma start",
+    "tdd": "karma start --auto-watch --no-single-run"
   },
   "author": "hm-432",
   "dependencies": {
@@ -49,6 +50,9 @@
     "karma-tap": "~1.0.4",
     "karma-webpack": "~1.7.0",
     "phantomjs-polyfill": "0.0.2",
-    "isparta-instrumenter-loader": "~1.0.0"
+    "isparta-instrumenter-loader": "~1.0.0",
+    "phantomjs": "~2.1.7",
+    "phantomjs-prebuilt": "~2.1.7",
+    "karma-phantomjs-launcher": "~1.0.0"
   }
 }
