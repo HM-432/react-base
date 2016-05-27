@@ -15,6 +15,7 @@ var ROOT_PATH = path.resolve(__dirname);
 var TARGET = process.env.npm_lifecycle_event;
 var APP_PATH = path.resolve(ROOT_PATH, 'app');
 var BUILD_PATH = path.resolve(ROOT_PATH, 'build');
+var TEST_PATH = path.resolve(ROOT_PATH, 'tests');
 
 //Setting babel environment
 process.env.BABEL_ENV = TARGET;
@@ -87,6 +88,35 @@ var webpackConfig = {
       new OpenBrowserWebPackPlugin({url: 'http://localhost:' + config.port})
     ]
   }),
+  test: merge(webpackCommonConfig,{
+    entry: {}, //karma will set this,
+    output: {}, //karma will set this
+    devtool: 'inline-source-map',
+    resolve: {
+      alias: {
+        'app': APP_PATH
+      }
+    },
+    module: {
+      preLoaders: [
+        {
+          test: /\.jsx?$/,
+          loaders: ['isparta-instrumenter'],
+          include: APP_PATH
+        }
+      ],
+      loaders: [
+        {
+          test: /\.jsx?$/,
+          loader: 'babel',
+          include: TEST_PATH,
+          query: {
+            presets: ['es2015', 'react', 'stage-0']
+          }
+        }
+      ]
+    }
+  }),
   production: merge(webpackCommonConfig, {
     devtool: "source-map",
     "entry": {
@@ -132,4 +162,6 @@ if (TARGET === 'start' || !TARGET) {
   module.exports = webpackConfig.development;
 } else if (TARGET === 'build' || TARGET === 'stats') {
   module.exports = webpackConfig.production;
+} else if (TARGET === 'test' || TARGET === 'tdd') {
+  module.exports = webpackConfig.test;
 }
